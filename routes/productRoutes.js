@@ -3,6 +3,7 @@ const productController = require('../controllers/productController')
 
 
 productRoutes.get('/', productController.getAllProducts)
+productRoutes.get('/:id', productController.getOneProduct)
 
 
 
