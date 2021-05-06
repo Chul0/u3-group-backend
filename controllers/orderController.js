@@ -14,9 +14,10 @@ orderController.createOrder = async (req, res) => {
         const user = await models.user.findOne({
             where: {
                 id: decryptedId.userId
-            },
-            include: models.product
+            }
         })
+
+        const product = await user.getProducts()
 
         const order = await models.order.create({
             address:req.body.address,
@@ -24,6 +25,8 @@ orderController.createOrder = async (req, res) => {
         })
         
         await user.addOrders(order)
+        await order.addProduct(product)
+
         await order.reload()
        
         res.json({user,order})
@@ -32,6 +35,23 @@ orderController.createOrder = async (req, res) => {
     }
 }
 
+orderController.findAllOrder = async (req, res) => {
+    try {
+        const decryptedId = jwt.verify(req.headers.authorization, process.env.JWT_SECRET)
+        
+        const user = await models.user.findOne({
+            where: {
+                id: decryptedId.userId
+            }
+        })
+
+        let orders = await user.getOrders({include:models.product})
+
+        res.json({user, orders})
+    } catch (error) {
+        res.json(error)
+    }
+}
 
 
 module.exports = orderController
