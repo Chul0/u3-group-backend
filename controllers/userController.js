@@ -50,6 +50,7 @@ userController.login = async(req, res) => {
     }
   }
 
+
   userController.verifyUser = async (req, res) => {
     try {
       const decryptedId = jwt.verify(req.headers.authorization, process.env.JWT_SECRET)
@@ -69,6 +70,26 @@ userController.login = async(req, res) => {
     } catch (error) {
       console.log(error);
       res.status(400).json({error: error.message})
+    }
+  }
+
+  userController.getMyCart = async (req, res) => {
+    try {
+      
+      const decryptedId = jwt.verify(req.headers.authorization, process.env.JWT_SECRET)
+      
+      const user = await models.user.findOne({
+        where: {
+          
+          id: decryptedId.userId
+        }
+      })
+    
+      const savedProduct = await user.getProducts()
+  
+      res.json(savedProduct)
+    } catch (error) {
+      res.json(error)
     }
   }
 
