@@ -14,5 +14,20 @@ productController.getAllProducts = async (req, res) => {
     }
 }
 
+productController.getOneProduct = async (req, res) => {
+    try {
+        const product = await models.product.findOne({
+            where:{
+                id: req.params.id
+            }
+        })
+        
+           res.json({product})
+    } catch (error) {
+        res.json({error: error.message})
+    }
+}
+
+
 
 module.exports =productController
