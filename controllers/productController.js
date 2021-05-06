@@ -1,3 +1,7 @@
+require('dotenv').config()
+const jwt = require('jsonwebtoken')
+const bcrypt = require('bcrypt')
+
 const models = require('../models')
 
 
@@ -28,6 +32,36 @@ productController.getOneProduct = async (req, res) => {
     }
 }
 
+
+//Save products to my cart
+
+productController.save = async (req, res) => {
+    try {
+        const product = await models.product.findOne({
+            where:{
+                id:req.params.id
+            }
+        })
+        const decryptedId = jwt.verify(req.headers.authorization, process.env.JWT_SECRET)
+        
+        const user = await models.user.findOne({
+            where: {
+                id: decryptedId.userId
+            }
+        })
+
+        const mycart = await models.myCart.create({
+            userId: user.id,
+            productId:product.id
+        })
+  
+        // let addAssociation = await user.addProducts(product)
+        //addChildren doesn't allow duplicating a row, so we need to use create() instead.
+        res.json({product, user, mycart})
+    } catch (error) {
+        res.json(error)
+    }
+}
 
 
 module.exports =productController
