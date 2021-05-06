@@ -18,6 +18,9 @@ app.use('/users', userRoutes)
 const productRoutes = require('./routes/productRoutes')
 app.use('/products', productRoutes)
 
+const orderRoutes = require('./routes/orderRoutes')
+app.use('/order', orderRoutes)
+
 ///////////////////code above//////////////////
 
 const PORT = process.env.PORT || 3001
