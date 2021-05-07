@@ -60,5 +60,28 @@ orderController.findAllOrder = async (req, res) => {
     }
 }
 
+orderController.getOneOrder = async (req, res) => {
+    try {
+        const decryptedId = jwt.verify(req.headers.authorization, process.env.JWT_SECRET)
+        
+        const user = await models.user.findOne({
+            where: {
+                id: decryptedId.userId
+            }
+        })
+
+        const order = await models.order.findOne({
+            where:{
+                id:req.params.id
+            }
+        })
+
+        let product = await order.getProducts()
+
+        res.json({user, order, product})
+    } catch (error) {
+        res.json(error)
+    }
+}
 
 module.exports = orderController
