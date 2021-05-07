@@ -17,24 +17,29 @@ orderController.createOrder = async (req, res) => {
                 id: decryptedId.userId
             }
         })
+        //find one user
+
         const product = await user.getProducts()
-        console.log(product);
+        // console.log(product);
+        //get this user's products through(from) myCart 
 
         const order = await models.order.create({
             address:req.body.address,
             creditCardNum:req.body.creditCardNum
         })
-        
+        //create a new order 
         const myCart = await user.getMyCarts()
 
         await user.addOrders(order)
         await order.addProduct(product)
+        //add the newly created order to user, add the products from myCart to the new order
 
         await order.reload()
 
         for(let i=0 ; i < myCart.length; i++){
             await myCart[i].destroy()
           }
+        //Lastly destroy(empty) everything from the myCart
        
         res.json({user,product,order,myCart})
     } catch (error) {
