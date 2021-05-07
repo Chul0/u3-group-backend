@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 
 const models = require('../models')
+const mycart = require('../models/mycart')
 
 
 const  orderController ={}
@@ -16,20 +17,26 @@ orderController.createOrder = async (req, res) => {
                 id: decryptedId.userId
             }
         })
-
         const product = await user.getProducts()
+        console.log(product);
 
         const order = await models.order.create({
             address:req.body.address,
             creditCardNum:req.body.creditCardNum
         })
         
+        const myCart = await user.getMyCarts()
+
         await user.addOrders(order)
         await order.addProduct(product)
 
         await order.reload()
+
+        for(let i=0 ; i < myCart.length; i++){
+            await myCart[i].destroy()
+          }
        
-        res.json({user,product,order})
+        res.json({user,product,order,myCart})
     } catch (error) {
         res.json(error)
     }

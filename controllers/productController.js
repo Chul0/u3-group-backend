@@ -50,14 +50,16 @@ productController.save = async (req, res) => {
             }
         })
 
-        const mycart = await models.myCart.create({
-            userId: user.id,
+        const newCart = await models.myCart.create({
+            userId:user.id,
             productId:product.id
         })
+        await user.addMyCart(newCart)
+        await product.addMyCart(newCart)
   
         // let addAssociation = await user.addProducts(product)
         //addChildren doesn't allow duplicating a row, so we need to use create() instead.
-        res.json({product, user, mycart})
+        res.json({product, user, newCart})
     } catch (error) {
         res.json(error)
     }
