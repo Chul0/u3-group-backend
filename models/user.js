@@ -12,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       models.user.belongsToMany(models.product, {through:'myCart'})
       models.user.hasMany(models.order)
+      models.user.hasMany(models.myCart)
     }
   };
   user.init({
