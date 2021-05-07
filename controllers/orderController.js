@@ -29,7 +29,7 @@ orderController.createOrder = async (req, res) => {
 
         await order.reload()
        
-        res.json({user,order})
+        res.json({user,product,order})
     } catch (error) {
         res.json(error)
     }
